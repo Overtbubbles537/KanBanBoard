@@ -1,0 +1,40 @@
+html {
+    font-size: 20px;
+}
+
+body {
+    background-color: bisque;
+}
+
+.container {
+    background-color: aqua;
+    width: 24rem;
+    margin: 0 auto;
+    padding-bottom: 2rem;
+}
+
+.Btns {
+    display: flex;
+    background-color: blue;
+    flex-direction: column;
+    gap: 0.3rem;
+    border: 0;
+}
+
+.Btns input {
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 0;
+}
+
+.Btns button {
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 0;
+    background-color: rgb(218, 178, 255);
+} 
+
+.register-link {
+    text-align: center;
+    margin-top: 0rem;
+}
