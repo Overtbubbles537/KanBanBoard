@@ -1,5 +1,9 @@
 html {
-    font-size: 20px;
+    font-size: 24px;
+}
+
+.container h1 {
+    text-align: center;
 }
 
 body {
@@ -7,7 +11,7 @@ body {
 }
 
 .container {
-    background-color: aqua;
+    /* background-color: aqua; */
     width: 24rem;
     margin: 0 auto;
     padding-bottom: 2rem;
@@ -15,9 +19,9 @@ body {
 
 .Btns {
     display: flex;
-    background-color: blue;
+    /* background-color: blue; */
     flex-direction: column;
-    gap: 0.3rem;
+    gap: 0.5rem;
     border: 0;
 }
 
@@ -32,9 +36,15 @@ body {
     border-radius: 8px;
     border: 0;
     background-color: rgb(218, 178, 255);
+    transition: background-color 0.2s ease;
+    cursor: pointer;
 } 
 
 .register-link {
     text-align: center;
     margin-top: 0rem;
+}
+
+.Submit:hover {
+    background-color: rgb(176, 105, 243);
 }

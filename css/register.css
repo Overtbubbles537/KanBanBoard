@@ -1,0 +1,44 @@
+html {
+    font-size: 24px;
+}
+
+body {
+    background-color: bisque;
+}
+
+.container h1{
+    text-align: center;
+}
+
+.container {
+    width: 24rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.input {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.input input {
+    border: 0;
+    padding: 0.5rem;
+    border-radius: 8px;
+}
+
+.Submit{ 
+    border: 0;
+    background-color: rgb(218, 178, 255);
+    width: 12rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+    align-self: center;
+    cursor: pointer;
+}
+
+.Submit:hover {
+    background-color: rgb(176, 105, 243);
+}
