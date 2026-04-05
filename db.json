@@ -7,10 +7,16 @@
       "username": "Тестовый пользователь"
     },
     {
-      "username": "Александр  Крупин",
-      "email": "1606950@list.ru",
+      "username": "dfgs",
+      "email": "sadfsd@fsgdg",
+      "password": "34",
+      "id": "_rBHDamkSEs"
+    },
+    {
+      "username": "qwe",
+      "email": "qwe@qwe",
       "password": "123",
-      "id": "kIIoErl5CIQ"
+      "id": "n2kXdo_hE_U"
     }
   ],
   "tasks": [
@@ -18,7 +24,13 @@
       "id": "1",
       "title": "Изучить HTML/CSS",
       "status": "todo",
-      "userId": 1
+      "userId": "1"
+    },
+    {
+      "id": "n2kXdo_hE_U",
+      "title": "Умнеть",
+      "status": "todo",
+      "userId": "1"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
