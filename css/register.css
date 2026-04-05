@@ -33,7 +33,7 @@ body {
     border: 0;
     background-color: rgb(218, 178, 255);
     width: 12rem;
-    padding: 0.5rem;
+    padding: 0.8rem;
     border-radius: 8px;
     align-self: center;
     cursor: pointer;
@@ -41,4 +41,8 @@ body {
 
 .Submit:hover {
     background-color: rgb(176, 105, 243);
+}
+
+.frase {
+    text-align: center;
 }
