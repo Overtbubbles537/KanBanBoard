@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('loginForm');
-    console.log('форма найдена', form);
     form.addEventListener('submit', function(event){
         event.preventDefault();
 
