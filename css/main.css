@@ -7,8 +7,16 @@ body {
 }
 
 .board-container {
+    background-color: rgb(255, 255, 255);
+    padding: 1rem;
+    padding-top: 0.1rem;
     width: 24rem;
     margin: 0 auto;
+    border-radius: 8px;
+}
+
+body h1{
+    text-align: center;
 }
 
 .column{
@@ -17,7 +25,118 @@ body {
 }
 
 .task-list {
-    background-color: rgb(255, 255, 255);
-    border: 0;
+    margin: 0.2rem;
+    background-color: rgb(255, 231, 231);
+    border: 0.05rem;
     border-radius: 8px;
+    border-color: black;
+    border-style: solid;
+}
+
+.logOut {
+    text-align: center;
+    width: 5rem;
+    /* background-color: blueviolet; */
+}
+
+#logoutBtn {
+    width: 100%;
+    padding: 0.3rem;
+    border-radius: 8px;
+    border: 0.05rem;
+    border-color: black;
+    border-style: solid;
+    background-color: rgb(255, 153, 153);
+    cursor: pointer;
+}
+
+#logoutBtn:hover {
+    background-color: rgb(255, 0, 0);
+}
+
+.AddBtnCont {
+    text-align: center;
+}
+
+#AddTaskBtn {
+    margin-top: 0.8rem;
+    padding: 0.5rem;
+    width: 100%;
+    border-radius: 8px;
+    border: 0.05rem;
+    border-color: #ddd;
+    border-style: solid;
+    background-color: aquamarine;
+    cursor: pointer;
+}
+
+#AddTaskBtn:hover {
+    background-color: rgb(150, 246, 169);
+}
+
+/* Модальное окно */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: rgb(255, 255, 255);
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 500px;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: red;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+.modal-content select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.modal-content button {
+    background-color: aquamarine;
+    color: rgb(0, 0, 0);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.modal-content button:hover {
+    background-color: rgb(150, 246, 169);
+}
+
+.modal-content h2 {
+    text-align: center;
 }

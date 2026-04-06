@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
+    <div class="logOut">
+        <button id="logoutBtn">Выйти</button>
+    </div>
     <div class="board-container">
         <h1>Моя канбан-доска</h1>
         
@@ -34,8 +37,27 @@
                     <li class="task-card">Создать репозиторий</li>
                 </ul>
             </div>
+            <div class="AddBtnCont">
+                <form action="#" method="post" id="AddBtnContent">
+                    <button id="AddTaskBtn">Добавить задачу</button>
+                </form>
+            </div>
         </div>
-        <button id="logoutBtn">Выйти</button>
+    </div>
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Добавить новую задачу</h2>
+            <form id="taskForm">
+                <input type="text" id="taskTitle" placeholder="Название задачи" required>
+                <select id="taskStatus" required>
+                    <option value="todo">To Do</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="done">Done</option>
+                </select>
+                <button type="submit">Создать задачу</button>
+            </form>
+        </div>
     </div>
     <script src="../js/main.js"></script>
 </body>

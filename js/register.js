@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', function(){
     const form = document.getElementById('registerForm');
     form.addEventListener('submit', function(event){
         event.preventDefault();
-        console.log('preventDefault вызван, форма НЕ должна отправиться');
 
         const nickname = (document.getElementById('nickname')).value;
         const email = (document.getElementById('email')).value;
@@ -11,24 +10,24 @@ document.addEventListener('DOMContentLoaded', function(){
 
         console.log(nickname,email,password1,password2);
 
+        const emailRegex = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/;
+        const IsValid_email = emailRegex.test(email);
+
         // const passwordRegex = /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}/;
-        // const IsValid = passwordRegex.test(password1);
-        
-        // if (!IsValid){
-        //     alert('Ты петух')
-        //     return 0
-        // }
-        if (email === '') {
-            alert('Введите email!');
-            return;
-        }  
+        // const IsValid_password = passwordRegex.test(password1);
+
         if (nickname === ''){
             alert('Введите никнейм!')
-        }
-        if (password1 === '') {
-            alert('Введите пароль!');
             return;
         }
+        if (!IsValid_email){
+            alert('Мэйл хуйни')
+            return;
+        }
+        // if (!IsValid_password){
+        //     alert('пароль хуйни')
+        //     return;
+        // }
         if (password1 !== password2){
             alert('Пароли не совпадают!');
             return 0
@@ -65,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function(){
                         })
                         .then(function() {
                             alert('Регистрация успешна!');
-                            window.location.assign('index.html');
+                            window.location.href = 'index.html';
                         })
                         .catch(function(error) {
                             console.error('Ошибка:', error);

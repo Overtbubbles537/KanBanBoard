@@ -14,6 +14,32 @@ document.addEventListener('DOMContentLoaded', function(){
     console.log('Пользователь', user.email);
 
     loadTasks(user);
+    // Работа с модальным окном
+    const modal = document.getElementById('taskModal');
+    const addBtn = document.getElementById('AddTaskBtn');
+    const closeBtn = document.querySelector('.close');
+    const taskForm = document.getElementById('taskForm');
+
+    // Открыть модальное окно
+    addBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        modal.style.display = 'block';
+    });
+
+    // Закрыть по крестику
+    closeBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
+
+    // Закрыть по клику вне окна
+    window.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+    // const form = document.getElementById('AddBtnContent');
+    // form.addEventListener('submit', function(event){
+    //     fetch('http://localhost:3001/tasks', {
 });
 
 function loadTasks(user){
