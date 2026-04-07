@@ -17,6 +17,12 @@
       "email": "qwe@qwe",
       "password": "123",
       "id": "n2kXdo_hE_U"
+    },
+    {
+      "username": "Бабуля",
+      "email": "sfdfisi@fskfj.com",
+      "password": "12345678%Rg",
+      "id": "aCNRcZ3"
     }
   ],
   "tasks": [
@@ -31,6 +37,42 @@
       "title": "Умнеть",
       "status": "todo",
       "userId": "1"
+    },
+    {
+      "title": "помочь бабуле",
+      "status": "todo",
+      "userId": "n2kXdo_hE_U",
+      "id": "Pit_vcU"
+    },
+    {
+      "title": "ырлолоа",
+      "status": "in-progress",
+      "userId": "n2kXdo_hE_U",
+      "id": "wD9QZE_"
+    },
+    {
+      "title": "Помыть окна",
+      "status": "todo",
+      "userId": "aCNRcZ3",
+      "id": "MfhFZRU"
+    },
+    {
+      "title": "ылгралгуыфаур",
+      "status": "todo",
+      "userId": "aCNRcZ3",
+      "id": "QuahTSG"
+    },
+    {
+      "title": "ырплуы",
+      "status": "done",
+      "userId": "aCNRcZ3",
+      "id": "yaRfVgH"
+    },
+    {
+      "title": "///",
+      "status": "todo",
+      "userId": "aCNRcZ3",
+      "id": "KrS45Hk"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

@@ -26,10 +26,9 @@ body h1{
 
 .task-list {
     margin: 0.2rem;
-    background-color: rgb(255, 231, 231);
-    border: 0.05rem;
+    background-color: rgb(255, 255, 255);
+    border: 0;
     border-radius: 8px;
-    border-color: black;
     border-style: solid;
 }
 

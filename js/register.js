@@ -13,24 +13,24 @@ document.addEventListener('DOMContentLoaded', function(){
         const emailRegex = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/;
         const IsValid_email = emailRegex.test(email);
 
-        // const passwordRegex = /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}/;
-        // const IsValid_password = passwordRegex.test(password1);
+        const passwordRegex = /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}/;
+        const IsValid_password = passwordRegex.test(password1);
 
         if (nickname === ''){
             alert('Введите никнейм!')
             return;
         }
         if (!IsValid_email){
-            alert('Мэйл хуйни')
+            alert('Мэйл неправильный')
             return;
         }
-        // if (!IsValid_password){
-        //     alert('пароль хуйни')
-        //     return;
-        // }
+        if (!IsValid_password){
+            alert('пароль неправильный')
+            return;
+        }
         if (password1 !== password2){
             alert('Пароли не совпадают!');
-            return 0
+            return;
         } else {
             fetch('http://localhost:3001/users')
                 .then(function(response){

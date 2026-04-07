@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function(){
     const modal = document.getElementById('taskModal');
     const addBtn = document.getElementById('AddTaskBtn');
     const closeBtn = document.querySelector('.close');
-    const taskForm = document.getElementById('taskForm');
 
     // Открыть модальное окно
     addBtn.addEventListener('click', function(e) {
@@ -37,9 +36,45 @@ document.addEventListener('DOMContentLoaded', function(){
             modal.style.display = 'none';
         }
     });
-    // const form = document.getElementById('AddBtnContent');
-    // form.addEventListener('submit', function(event){
-    //     fetch('http://localhost:3001/tasks', {
+    const form = document.getElementById('taskForm');
+    form.addEventListener('submit', function(event){
+        event.preventDefault();
+
+        const Task = document.getElementById('taskTitle').value;
+        const status = document.getElementById('taskStatus').value;
+        
+        if(Task === ''){
+            alert('Задача не может быть пустой!');
+            return;
+        }
+
+        fetch('http://localhost:3001/tasks', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: Task,
+                status: status,
+                userId: user.id,
+            })
+        })
+        .then(function(response){
+            if(response.ok){
+                return response.json();
+            } else {
+                throw new Error('Ошибка при добавлении задачи!');
+            }
+        })
+        .then(function(){
+            alert('Задача успешно добавлена!')
+            modal.style.display = 'none';
+            loadTasks(user);
+        })
+        .catch(function(error){
+            console.error('Ошибка', error);
+        })
+    });
 });
 
 function loadTasks(user){
@@ -48,10 +83,6 @@ function loadTasks(user){
             return response.json();
         })
         .then(function(tasks) {
-            // console.log('Тип user.id:', typeof user.id);
-            // console.log('Тип userId в задаче:', typeof tasks[0]?.userId);
-            // console.log('Значение user.id:', user.id);
-            // console.log('Значение userId в задаче:', tasks[0]?.userId);
             const userTasks = tasks.filter(task => task.userId == user.id);
             console.log('Задачи пользователя:', userTasks);
             document.getElementById('todo-list').innerHTML = '';
