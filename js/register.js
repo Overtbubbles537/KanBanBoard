@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', function(){
 
         const passwordRegex = /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}/;
         const IsValid_password = passwordRegex.test(password1);
-
+        
+        // Валидация
         if (nickname === ''){
             alert('Введите никнейм!')
             return;
@@ -42,8 +43,9 @@ document.addEventListener('DOMContentLoaded', function(){
                     })
                     if (ExistUser){
                         alert('Пользователь с таким email уже существует!')
-                        return 0
+                        return;
                     } else {
+                        // Отправка данных на сервер
                         fetch('http://localhost:3001/users', {
                             method: 'POST',
                             headers: {
@@ -62,6 +64,7 @@ document.addEventListener('DOMContentLoaded', function(){
                                 throw new Error('Ошибка при регистрации');
                             }
                         })
+                        // Теоретически переход на страницу входа
                         .then(function() {
                             alert('Регистрация успешна!');
                             window.location.href = 'index.html';

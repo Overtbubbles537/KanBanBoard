@@ -73,7 +73,6 @@ body h1{
     background-color: rgb(150, 246, 169);
 }
 
-/* Модальное окно */
 .modal {
     display: none;
     position: fixed;
@@ -138,4 +137,17 @@ body h1{
 
 .modal-content h2 {
     text-align: center;
+}
+
+.DelBtn {
+    background-color: rgb(255, 255, 255);
+    border-radius: 8px;
+    border: 0;
+    border-style: solid;
+    float: right;
+    cursor: pointer;
+}
+
+.DelBtn:hover {
+    background-color: red;
 }

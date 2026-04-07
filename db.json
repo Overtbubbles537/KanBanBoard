@@ -27,18 +27,6 @@
   ],
   "tasks": [
     {
-      "id": "1",
-      "title": "Изучить HTML/CSS",
-      "status": "todo",
-      "userId": "1"
-    },
-    {
-      "id": "n2kXdo_hE_U",
-      "title": "Умнеть",
-      "status": "todo",
-      "userId": "1"
-    },
-    {
       "title": "помочь бабуле",
       "status": "todo",
       "userId": "n2kXdo_hE_U",
@@ -51,28 +39,16 @@
       "id": "wD9QZE_"
     },
     {
-      "title": "Помыть окна",
+      "title": "lkhkuo",
       "status": "todo",
       "userId": "aCNRcZ3",
-      "id": "MfhFZRU"
+      "id": "U0_OQ2_"
     },
     {
-      "title": "ылгралгуыфаур",
-      "status": "todo",
+      "title": "gsdg",
+      "status": "in-progress",
       "userId": "aCNRcZ3",
-      "id": "QuahTSG"
-    },
-    {
-      "title": "ырплуы",
-      "status": "done",
-      "userId": "aCNRcZ3",
-      "id": "yaRfVgH"
-    },
-    {
-      "title": "///",
-      "status": "todo",
-      "userId": "aCNRcZ3",
-      "id": "KrS45Hk"
+      "id": "1bdaRr_"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

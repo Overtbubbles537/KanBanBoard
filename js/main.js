@@ -1,10 +1,12 @@
 document.addEventListener('DOMContentLoaded', function(){
+
+    // Проверка вошедшего юзера
     const currentUser = localStorage.getItem('currentUser');
-    if (!currentUser){
+    if (!currentUser){  
         window.location.href = 'index.html';
         return;
     }
-
+    // Выход с доски
     document.getElementById('logoutBtn').addEventListener('click', function() {
         localStorage.removeItem('currentUser');
         window.location.href = 'index.html';
@@ -36,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function(){
             modal.style.display = 'none';
         }
     });
+    // Добавление задачи
     const form = document.getElementById('taskForm');
     form.addEventListener('submit', function(event){
         event.preventDefault();
@@ -77,6 +80,7 @@ document.addEventListener('DOMContentLoaded', function(){
     });
 });
 
+// функция загрузки данных пользователя на страницу
 function loadTasks(user){
     fetch('http://localhost:3001/tasks')
         .then(function(response){
@@ -90,16 +94,40 @@ function loadTasks(user){
             document.getElementById('done-list').innerHTML = '';
             userTasks.forEach(function(task){
                 const li = document.createElement('li');
+                const button = document.createElement('button');
+
+                button.className = 'DelBtn';
+                button.textContent = '❌';
+
                 li.className = 'task-card';
                 li.textContent = task.title;
 
                 if (task.status === 'todo'){
-                    document.getElementById('todo-list').appendChild(li);
+                    document.getElementById('todo-list').appendChild(li).appendChild(button);
                 } else if (task.status === 'in-progress'){
-                    document.getElementById('progress-list').appendChild(li);
+                    document.getElementById('progress-list').appendChild(li).appendChild(button);
                 } else if (task.status == 'done'){
-                    document.getElementById('done-list').appendChild(li);
+                    document.getElementById('done-list').appendChild(li).appendChild(button);
                 }
+                
+                // Удаление задачи
+                button.addEventListener('click', function(e){
+                    e.preventDefault();
+                    fetch(`http://localhost:3001/tasks/${task.id}`,{
+                        method: 'DELETE',
+                    })
+                    .then(function(response){
+                        if(response.ok){
+                            alert('Задача удалена!');
+                            loadTasks(user);
+                        } else {
+                            throw new Error('Ошибка удаления задачи!');
+                        }
+                    })
+                    .catch(function(error){
+                        console.log('Ошибка',error);
+                    })
+                })
             })
         })
         .catch(function(error){
