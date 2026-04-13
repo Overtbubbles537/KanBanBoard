@@ -94,24 +94,31 @@ function loadTasks(user){
             document.getElementById('done-list').innerHTML = '';
             userTasks.forEach(function(task){
                 const li = document.createElement('li');
-                const button = document.createElement('button');
+                const DelBtn = document.createElement('button');
+                const EditBtn = document.createElement('button');
 
-                button.className = 'DelBtn';
-                button.textContent = '❌';
+                DelBtn.className = 'DelBtn';
+                DelBtn.textContent = '❌';
+
+                EditBtn.className = 'EditBtn'
+                EditBtn.textContent = '✏️';
 
                 li.className = 'task-card';
                 li.textContent = task.title;
 
+                li.appendChild(DelBtn);
+                li.appendChild(EditBtn);
+
                 if (task.status === 'todo'){
-                    document.getElementById('todo-list').appendChild(li).appendChild(button);
+                    document.getElementById('todo-list').appendChild(li);
                 } else if (task.status === 'in-progress'){
-                    document.getElementById('progress-list').appendChild(li).appendChild(button);
+                    document.getElementById('progress-list').appendChild(li);
                 } else if (task.status == 'done'){
-                    document.getElementById('done-list').appendChild(li).appendChild(button);
+                    document.getElementById('done-list').appendChild(li);
                 }
                 
                 // Удаление задачи
-                button.addEventListener('click', function(e){
+                DelBtn.addEventListener('click', function(e){
                     e.preventDefault();
                     fetch(`http://localhost:3001/tasks/${task.id}`,{
                         method: 'DELETE',
