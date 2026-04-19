@@ -100,3 +100,32 @@ class TokenData(BaseModel):
 
     user_id: Optional[int] = None
     email: Optional[str] = None
+
+
+# ====== СХЕМЫ ДЛЯ 2FA ======
+class TwoFactorSetupResponse(BaseModel):
+    """Ответ при начале настройки 2FA"""
+
+    secret: str
+    qr_code: str  # base64 строка с QR-кодом
+    uri: str  # ссылка для приложения
+
+
+class TwoFactorVerifyRequest(BaseModel):
+    """Запрос на включение 2FA"""
+
+    code: str = Field(..., min_length=6, max_length=6)
+
+
+class TwoFactorLoginRequest(BaseModel):
+    """Запрос на вход с 2FA"""
+
+    email: EmailStr
+    password: str
+    code: Optional[str] = Field(None, min_length=6, max_length=6)
+
+
+class BackupCodesResponse(BaseModel):
+    """Ответ с резервными кодами"""
+
+    codes: List[str]

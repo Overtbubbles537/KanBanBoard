@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function(){
             return;
         }
 
-        // Отправляем ТОЛЬКО POST запрос (без предварительного GET)
+        // Отправляем POST запрос
         fetch('http://localhost:8000/auth/register', {
             method: 'POST',
             headers: {

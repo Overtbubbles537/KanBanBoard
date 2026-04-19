@@ -38,8 +38,28 @@ body h1{
     /* background-color: blueviolet; */
 }
 
+#settingsBtn {
+    width: 8%;
+    border-radius: 8px;
+    border: 0.05rem;
+    border-color: black;
+    border-style: solid;
+    margin-top: 0.5rem;
+    padding: 0.3rem;
+    cursor: pointer;
+}
+
+#settingsBtn:hover {
+    background-color: rgb(103, 105, 107);
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
 #logoutBtn {
-    width: 100%;
+    width: 8%;
     padding: 0.3rem;
     border-radius: 8px;
     border: 0.05rem;
@@ -163,4 +183,116 @@ body h1{
 
 .EditBtn:hover {
     background-color: rgb(255, 161, 21);
+}
+
+.qrcode-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin-top: 0;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    text-align: center;
+    z-index: 10000; 
+    border: 5px solid rgb(0, 0, 0);
+}
+
+.settings-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .qrcode-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .qrcode-container img {
+            max-width: 200px;
+            margin: 10px auto;
+        }
+        
+        .backup-codes {
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+        }
+        
+        .backup-codes ul {
+            columns: 2;
+            list-style: none;
+            padding: 0;
+        }
+        
+        .backup-codes li {
+            font-family: monospace;
+            padding: 5px;
+            background: white;
+            margin: 2px;
+            border-radius: 4px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .btn-warning {
+            background: #ffc107;
+            color: #000;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+#verifyCode {
+    width: 80%;
+    box-sizing: border-box;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.modal-buttons button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-buttons .Submit {
+    background: #4CAF50;
+    color: white;
+}
+
+.modal-buttons .Cancel {
+    background: #f44336;
+    color: white;
+}
+
+.task-card {
+    width: 100%;
+    display: flex;              
+    justify-content: space-between; 
+    align-items: center;    
+    border: 1px solid #000000;
+    border-radius: 8px; 
+    padding: 0.2rem;
+    margin-top: 0.2rem;
+    margin-left: -1rem;
+    cursor: pointer;
 }

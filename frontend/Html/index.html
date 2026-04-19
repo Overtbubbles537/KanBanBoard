@@ -4,20 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/styles.css">
-    <title>Enter</title>
+    <title>Вход</title>
 </head>
 <body>
     <div class="container">
         <h1>Авторизация</h1>
-        <form action="#" method="post" id="loginForm" class="Btns">
-            <input type="email" id="email" placeholder="Ваш email адрес">
-            <input type="password" id="password" placeholder="Пароль">
-            <button class="Submit">Войти</button>
+        
+        <form id="loginForm" class="Btns">
+            <div id="passwordSection">
+                <input type="email" id="email" placeholder="Ваш email адрес" required>
+                <input type="password" id="password" placeholder="Пароль" required>
+            </div>
+    
+            <div id="twoFactorSection" class="two-factor-section hidden">
+                <p style="margin-bottom: 10px;">🔐 Введите код из приложения-аутентификатора</p>
+                <input type="text" id="twoFactorCode" placeholder="000000" maxlength="6" inputmode="numeric" pattern="[0-9]*">
+                <p class="hint" style="font-size: 12px; color: #666; margin-top: 5px;">Или используйте резервный код</p>
+            </div>
+            
+            <button type="submit" id="loginButton" class="Submit">Войти</button>
+            <button type="button" id="verifyButton" class="Submit hidden">Проверить код</button>
+            <button type="button" id="backButton" class="Submit hidden">← Назад</button>
+            
+            <div id="errorMessage" class="error-message"></div>
         </form>
+        
         <hr>
-        <p class="register-link">Нет аккаунта?
-        <a href="register.html">Зарегистрируйтесь</a></p>
+        <p class="register-link">
+            Нет аккаунта? <a href="register.html">Зарегистрируйтесь</a>
+        </p>
     </div>
-    <script src="..\js\login.js"></script>
+    
+    <script src="../js/login.js"></script>
 </body>
 </html>

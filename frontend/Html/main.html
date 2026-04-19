@@ -1,58 +1,106 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Канбан-доска</title>
     <link rel="stylesheet" href="../css/main.css">
+    <title>Kanban Board</title>
 </head>
 <body>
-    <div class="logOut">
-        <button id="logoutBtn">Выйти</button>
+    <div class="header">
+        <div class="user-info">
+            <span id="userEmail"></span>
+            <button id="logoutBtn" class="btn">🚪 Выйти</button>
+            <button id="settingsBtn" class="btn">⚙️ Настройки</button>
+        </div>
     </div>
-    <div class="board-container">
-        <h1>Моя канбан-доска</h1>
+    
+    <!-- Секция настроек 2FA -->
+    <div id="settingsPanel" class="settings-section hidden">
+        <h2>Настройки безопасности</h2>
         
-        <div class="board">
-            <div class="column">
-                <h2>To Do</h2>
-                <ul class="task-list" id="todo-list">
-                </ul>
-            </div>
+        <div id="twoFactorStatus">
+            <p>Двухфакторная аутентификация: <span id="otpStatus">❌ Отключена</span></p>
+            <button type="button" id="setup2faBtn" class="btn">🔐 Настроить 2FA</button>
+            <button id="disable2faBtn" class="btn btn-danger hidden">❌ Отключить 2FA</button>
+        </div>
+        
+        <!-- QR-код для настройки -->
+        <div id="qrcodeContainer" class="qrcode-container hidden">
+            <h3>Шаг 1: Отсканируйте QR-код</h3>
+            <p>Используйте Google Authenticator, TOTP или другое приложение</p>
+            <img id="qrcodeImage" src="" alt="QR Code">
             
-            <div class="column">
-                <h2>In Progress</h2>
-                <ul class="task-list" id="progress-list">
-                </ul>
-            </div>
+            <h3>Шаг 2: Введите код подтверждения</h3>
+            <input type="text" id="verifyCode" placeholder="000000" maxlength="6" inputmode="numeric">
+            <button type="button" id="enable2faBtn" class="btn">✅ Включить 2FA</button>
+            <button type="button" id="cancelSetupBtn" class="btn">❌ Отмена</button>
             
-            <div class="column">
-                <h2>Done</h2>
-                <ul class="task-list" id="done-list">
-                </ul>
-            </div>
-            <div class="AddBtnCont">
-                <form action="#" method="post" id="AddBtnContent">
-                    <button id="AddTaskBtn">Добавить задачу</button>
-                </form>
+            <div id="backupCodesContainer" class="backup-codes hidden">
+                <h3>🔑 Резервные коды</h3>
+                <p>Сохраните эти коды в надёжном месте! Они понадобятся, если вы потеряете доступ к приложению.</p>
+                <div id="backupCodesList"></div>
+                <button id="copyCodesBtn" class="btn">📋 Копировать все коды</button>
+                <button id="doneSetupBtn" class="btn">✅ Готово</button>
             </div>
         </div>
     </div>
-    <div id="taskModal" class="modal">
+    
+    <!-- Основной контент канбан-доски -->
+    <div class="board-container">
+        <h1>Kanban Board</h1>
+        <div class="column">
+            <h2>Todo</h2>
+            <ul id="todo-list" class="task-list"></ul>
+        </div>
+        <div class="column">
+            <h2>In Progress</h2>
+            <ul id="progress-list" class="task-list"></ul>
+        </div>
+        <div class="column">
+            <h2>Done</h2>
+            <ul id="done-list" class="task-list"></ul>
+        </div>
+        <button id="AddTaskBtn" class="add-task-btn">Добавить задачу</button>
+    </div>
+
+    <!-- Модальное окно РЕДАКТИРОВАНИЯ задачи -->
+    <div id="EditModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Добавить новую задачу</h2>
-            <form id="taskForm">
-                <input type="text" id="taskTitle" placeholder="Название задачи" required>
-                <select id="taskStatus" required>
-                    <option value="todo">To Do</option>
+            <span class="close-edit">&times;</span>
+            <h2>Редактирование задачи</h2>
+            <form id="editTaskForm">
+                <input type="text" id="editTaskTitle" placeholder="Название задачи" required>
+                <select id="editTaskStatus">
+                    <option value="todo">Todo</option>
                     <option value="in-progress">In Progress</option>
                     <option value="done">Done</option>
                 </select>
-                <button type="submit">Создать задачу</button>
+                <div class="modal-buttons">
+                    <button type="submit" class="Submit">💾 Сохранить</button>
+                    <button type="button" class="Cancel">❌ Отмена</button>
+                </div>
             </form>
         </div>
     </div>
+    
+    <!-- Модальное окно добавления задачи -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Новая задача</h2>
+            <form id="taskForm">
+                <input type="text" id="taskTitle" placeholder="Название задачи" required>
+                <select id="taskStatus">
+                    <option value="todo">Todo</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="done">Done</option>
+                </select>
+                <button type="submit" class="Submit">Добавить</button>
+            </form>
+        </div>
+    </div>
+    
     <script src="../js/main.js"></script>
 </body>
 </html>
