@@ -1,83 +1,58 @@
 document.addEventListener('DOMContentLoaded', function(){
     const form = document.getElementById('registerForm');
+    
     form.addEventListener('submit', function(event){
         event.preventDefault();
 
-        const nickname = (document.getElementById('nickname')).value;
-        const email = (document.getElementById('email')).value;
-        const password1 = (document.getElementById('password1')).value;
-        const password2 = (document.getElementById('password2')).value;
+        const nickname = document.getElementById('nickname').value;
+        const email = document.getElementById('email').value;
+        const password1 = document.getElementById('password1').value;
+        const password2 = document.getElementById('password2').value;
 
-        console.log(nickname,email,password1,password2);
-
-        const emailRegex = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/;
-        const IsValid_email = emailRegex.test(email);
-
-        const passwordRegex = /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}/;
-        const IsValid_password = passwordRegex.test(password1);
-        
         // Валидация
-        if (nickname === ''){
-            alert('Введите никнейм!')
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert('Неверный email');
             return;
         }
-        if (!IsValid_email){
-            alert('Мэйл неправильный')
+
+        if (password1.length < 6) {
+            alert('Пароль должен быть минимум 6 символов');
             return;
         }
-        if (!IsValid_password){
-            alert('пароль неправильный')
+
+        if (password1 !== password2) {
+            alert('Пароли не совпадают');
             return;
         }
-        if (password1 !== password2){
-            alert('Пароли не совпадают!');
-            return;
-        } else {
-            fetch('http://localhost:3001/users')
-                .then(function(response){
-                    return response.json();
-                })
-                .then(function(users){
-                    const ExistUser = users.find(function(user){
-                        return user.email === email;
-                    })
-                    if (ExistUser){
-                        alert('Пользователь с таким email уже существует!')
-                        return;
-                    } else {
-                        // Отправка данных на сервер
-                        fetch('http://localhost:3001/users', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                username: nickname,
-                                email: email,
-                                password: password1,
-                            })
-                        })
-                        .then(function(response){
-                            if (response.ok) {
-                                return response.json();
-                            } else {
-                                throw new Error('Ошибка при регистрации');
-                            }
-                        })
-                        // Теоретически переход на страницу входа
-                        .then(function() {
-                            alert('Регистрация успешна!');
-                            window.location.href = 'index.html';
-                        })
-                        .catch(function(error) {
-                            console.error('Ошибка:', error);
-                            alert('Не удалось зарегистрироваться');
-                        });
-                    }
-                })
-                .catch(function(error){
-                    console.error('Ошибка при запросе',error);
-                })
-        }
-    })
-})
+
+        // Отправляем ТОЛЬКО POST запрос (без предварительного GET)
+        fetch('http://localhost:8000/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: nickname,
+                email: email,
+                password: password1
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else if (response.status === 400) {
+                throw new Error('Пользователь с таким email уже существует');
+            } else {
+                throw new Error('Ошибка регистрации');
+            }
+        })
+        .then(data => {
+            alert('Регистрация успешна! Теперь войдите.');
+            window.location.href = 'index.html';
+        })
+        .catch(error => {
+            alert(error.message);
+        });
+    });
+});

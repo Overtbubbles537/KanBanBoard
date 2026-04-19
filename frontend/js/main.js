@@ -1,143 +1,230 @@
 document.addEventListener('DOMContentLoaded', function(){
 
-    // Проверка вошедшего юзера
+    // Проверка авторизации (теперь проверяем токен)
+    const token = localStorage.getItem('accessToken');
     const currentUser = localStorage.getItem('currentUser');
-    if (!currentUser){  
+    
+    if (!token || !currentUser){  
         window.location.href = 'index.html';
         return;
     }
-    // Выход с доски
-    document.getElementById('logoutBtn').addEventListener('click', function() {
-        localStorage.removeItem('currentUser');
-        window.location.href = 'index.html';
-    });
 
     const user = JSON.parse(currentUser);
     console.log('Пользователь', user.email);
 
-    loadTasks(user);
+    // Выход с доски
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('currentUser');
+        window.location.href = 'index.html';
+    });
+
+    loadTasks();
+    
     // Работа с модальным окном
     const modal = document.getElementById('taskModal');
     const addBtn = document.getElementById('AddTaskBtn');
     const closeBtn = document.querySelector('.close');
 
-    // Открыть модальное окно
     addBtn.addEventListener('click', function(e) {
         e.preventDefault();
         modal.style.display = 'block';
     });
 
-    // Закрыть по крестику
     closeBtn.addEventListener('click', function() {
         modal.style.display = 'none';
     });
 
-    // Закрыть по клику вне окна
     window.addEventListener('click', function(e) {
         if (e.target === modal) {
             modal.style.display = 'none';
         }
     });
+
     // Добавление задачи
     const form = document.getElementById('taskForm');
     form.addEventListener('submit', function(event){
         event.preventDefault();
 
-        const Task = document.getElementById('taskTitle').value;
+        const taskTitle = document.getElementById('taskTitle').value;
         const status = document.getElementById('taskStatus').value;
         
-        if(Task === ''){
+        if(taskTitle === ''){
             alert('Задача не может быть пустой!');
             return;
         }
 
-        fetch('http://localhost:3001/tasks', {
+        const token = localStorage.getItem('accessToken');
+
+        fetch('http://localhost:8000/tasks/', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({
-                title: Task,
-                status: status,
-                userId: user.id,
+                title: taskTitle,
+                status: status
+                // userId больше не отправляем — сервер берёт из токена
             })
         })
         .then(function(response){
             if(response.ok){
                 return response.json();
+            } else if (response.status === 401) {
+                // Токен истёк
+                localStorage.removeItem('accessToken');
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+                throw new Error('Сессия истекла');
             } else {
                 throw new Error('Ошибка при добавлении задачи!');
             }
         })
         .then(function(){
-            alert('Задача успешно добавлена!')
+            alert('Задача успешно добавлена!');
             modal.style.display = 'none';
-            loadTasks(user);
+            document.getElementById('taskTitle').value = '';
+            loadTasks();
         })
         .catch(function(error){
             console.error('Ошибка', error);
-        })
+            alert(error.message);
+        });
     });
 });
 
-// функция загрузки данных пользователя на страницу
-function loadTasks(user){
-    fetch('http://localhost:3001/tasks')
-        .then(function(response){
-            return response.json();
-        })
-        .then(function(tasks) {
-            const userTasks = tasks.filter(task => task.userId == user.id);
-            console.log('Задачи пользователя:', userTasks);
-            document.getElementById('todo-list').innerHTML = '';
-            document.getElementById('progress-list').innerHTML = '';
-            document.getElementById('done-list').innerHTML = '';
-            userTasks.forEach(function(task){
-                const li = document.createElement('li');
-                const DelBtn = document.createElement('button');
-                const EditBtn = document.createElement('button');
+// функция загрузки задач
+function loadTasks(){
+    const token = localStorage.getItem('accessToken');
+    
+    fetch('http://localhost:8000/tasks/', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(function(response){
+        if (response.status === 401) {
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+            throw new Error('Сессия истекла');
+        }
+        return response.json();
+    })
+    .then(function(tasks) {
+        console.log('Задачи пользователя:', tasks);
+        
+        // Очищаем списки
+        document.getElementById('todo-list').innerHTML = '';
+        document.getElementById('progress-list').innerHTML = '';
+        document.getElementById('done-list').innerHTML = '';
+        
+        tasks.forEach(function(task){
+            const li = document.createElement('li');
+            const taskText = document.createElement('span');
+            const buttonContainer = document.createElement('div');
+            const delBtn = document.createElement('button');
+            const editBtn = document.createElement('button');
 
-                DelBtn.className = 'DelBtn';
-                DelBtn.textContent = '❌';
+            taskText.textContent = task.title;
+            taskText.className = 'task-text';
+            
+            delBtn.className = 'DelBtn';
+            delBtn.textContent = '❌';
+            delBtn.title = 'Удалить';
 
-                EditBtn.className = 'EditBtn'
-                EditBtn.textContent = '✏️';
+            editBtn.className = 'EditBtn';
+            editBtn.textContent = '✏️';
+            editBtn.title = 'Редактировать';
 
-                li.className = 'task-card';
-                li.textContent = task.title;
+            buttonContainer.className = 'task-buttons';
+            buttonContainer.appendChild(editBtn);
+            buttonContainer.appendChild(delBtn);
 
-                li.appendChild(DelBtn);
-                li.appendChild(EditBtn);
+            li.className = 'task-card';
+            li.dataset.taskId = task.id;
+            li.dataset.status = task.status;
+            
+            li.appendChild(taskText);
+            li.appendChild(buttonContainer);
 
-                if (task.status === 'todo'){
-                    document.getElementById('todo-list').appendChild(li);
-                } else if (task.status === 'in-progress'){
-                    document.getElementById('progress-list').appendChild(li);
-                } else if (task.status == 'done'){
-                    document.getElementById('done-list').appendChild(li);
-                }
+            // Распределяем по колонкам
+            if (task.status === 'todo'){
+                document.getElementById('todo-list').appendChild(li);
+            } else if (task.status === 'in-progress'){
+                document.getElementById('progress-list').appendChild(li);
+            } else if (task.status === 'done'){
+                document.getElementById('done-list').appendChild(li);
+            }
+            
+            // Удаление задачи
+            delBtn.addEventListener('click', function(e){
+                e.preventDefault();
+                e.stopPropagation();
                 
-                // Удаление задачи
-                DelBtn.addEventListener('click', function(e){
-                    e.preventDefault();
-                    fetch(`http://localhost:3001/tasks/${task.id}`,{
-                        method: 'DELETE',
-                    })
-                    .then(function(response){
-                        if(response.ok){
-                            alert('Задача удалена!');
-                            loadTasks(user);
-                        } else {
-                            throw new Error('Ошибка удаления задачи!');
-                        }
-                    })
-                    .catch(function(error){
-                        console.log('Ошибка',error);
+                if (!confirm('Удалить задачу?')) return;
+                
+                const token = localStorage.getItem('accessToken');
+                
+                fetch(`http://localhost:8000/tasks/${task.id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                .then(function(response){
+                    if(response.ok){
+                        loadTasks();
+                    } else if (response.status === 401) {
+                        localStorage.removeItem('accessToken');
+                        localStorage.removeItem('currentUser');
+                        window.location.href = 'index.html';
+                    } else {
+                        throw new Error('Ошибка удаления задачи!');
+                    }
+                })
+                .catch(function(error){
+                    console.error('Ошибка', error);
+                    alert('Не удалось удалить задачу');
+                });
+            });
+            
+            // Редактирование задачи (заготовка)
+            editBtn.addEventListener('click', function(e){
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const newTitle = prompt('Введите новое название:', task.title);
+                if (!newTitle || newTitle === task.title) return;
+                
+                const token = localStorage.getItem('accessToken');
+                
+                fetch(`http://localhost:8000/tasks/${task.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        title: newTitle
                     })
                 })
-            })
-        })
-        .catch(function(error){
-            console.error('Ошибка вывода задач!',error);
-        })
+                .then(function(response){
+                    if(response.ok){
+                        loadTasks();
+                    } else {
+                        throw new Error('Ошибка обновления!');
+                    }
+                })
+                .catch(function(error){
+                    console.error('Ошибка', error);
+                    alert('Не удалось обновить задачу');
+                });
+            });
+        });
+    })
+    .catch(function(error){
+        console.error('Ошибка вывода задач!', error);
+    });
 }

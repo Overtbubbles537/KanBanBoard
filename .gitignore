@@ -1,0 +1,25 @@
+# Виртуальное окружение
+venv/
+env/
+.env
+.venv
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# База данных
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+
+# Секреты
+.env

@@ -1,35 +1,37 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('loginForm');
+    
     form.addEventListener('submit', function(event){
         event.preventDefault();
 
-        const emailInput = document.getElementById('email');
-        const email = emailInput.value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
 
-        const passwordInput =  document.getElementById('password');
-        const password = passwordInput.value;
-
-        console.log('Email:', email);
-        console.log('Пароль:', password);
-        console.log('Форма отправлена, перезагрузка отменена!')
-        fetch('http://localhost:3001/users')
-            .then(function(response) {
+        fetch('http://localhost:8000/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
+        })
+        .then(response => {
+            if (response.ok) {
                 return response.json();
-            })
-            .then(function(users){
-                const foundUser = users.find(function(user){
-                    return user.email === email && user.password === password;
-                })
-                if (foundUser) {
-                    localStorage.setItem('currentUser', JSON.stringify(foundUser));
-                    alert('Успешно!');
-                    window.location.href = 'main.html';          
-                } else {
-                    alert('Неверный email или пароль')
-                }
-            })
-            .catch(function(error){
-                console.error('Ошибка при запросе', error);
-            });
-    })  
+            } else {
+                throw new Error('Неверный email или пароль');
+            }
+        })
+        .then(data => {
+            // Сохраняем токен и пользователя
+            localStorage.setItem('accessToken', data.access_token);
+            localStorage.setItem('currentUser', JSON.stringify(data.user));
+            window.location.href = 'main.html';
+        })
+        .catch(error => {
+            alert(error.message);
+        });
+    });
 });
