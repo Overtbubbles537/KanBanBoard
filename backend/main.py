@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
+import threading
 
 from app.database import engine, Base
 from app.routes import auth, users, tasks
@@ -14,6 +15,17 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Kanban API", version="1.0.0", lifespan=lifespan)
+
+
+@app.get("/threads")
+def show_threads():
+    threads = []
+    for t in threading.enumerate():
+        threads.append(
+            {"name": t.name, "id": t.ident, "daemon": t.daemon, "alive": t.is_alive()}
+        )
+    return {"total_threads": threading.active_count(), "threads": threads}
+
 
 app.add_middleware(
     CORSMiddleware,

@@ -5,13 +5,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Асинхронный URL для SQLite (aiosqlite)
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./kanban.db")
 
 # Асинхронный движок
 engine = create_async_engine(
     DATABASE_URL,
-    echo=True,  # Показывает SQL запросы в консоли (для отладки)
+    echo=True,  # Показывает SQL запросы в консоли
     connect_args={"check_same_thread": False},
 )
 

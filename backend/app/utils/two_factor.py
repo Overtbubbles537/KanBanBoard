@@ -13,7 +13,7 @@ def generate_secret() -> str:
 
 
 def get_totp_uri(secret: str, email: str, issuer: str = "KanbanBoard") -> str:
-    """Создаёт URI для добавления в Google Authenticator"""
+    """Создаёт URI для добавления в TOTP"""
     totp = pyotp.TOTP(secret)
     return totp.provisioning_uri(name=email, issuer_name=issuer)
 
