@@ -142,18 +142,4 @@ document.addEventListener('DOMContentLoaded', function() {
         loginButton.disabled = false;
         showError('');
     });
-    
-    // Автоматическая отправка при вводе 6 цифр
-    document.getElementById('twoFactorCode').addEventListener('input', function(e) {
-        if (e.target.value.length === 6) {
-            verifyButton.click();
-        }
-    });
-    
-    // Разрешаем только цифры в поле кода
-    document.getElementById('twoFactorCode').addEventListener('keypress', function(e) {
-        if (!/[0-9]/.test(e.key)) {
-            e.preventDefault();
-        }
-    });
 });

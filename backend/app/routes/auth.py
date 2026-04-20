@@ -70,30 +70,59 @@ async def login(login_data: schemas.UserLogin, db: AsyncSession = Depends(get_db
 async def login_2fa(
     request: schemas.TwoFactorLoginRequest, db: AsyncSession = Depends(get_db)
 ):
-    """Второй этап входа — проверка 2FA кода"""
     user = await crud.get_user_by_email(db, request.email)
-    if not user:
-        raise HTTPException(status_code=401, detail="Пользователь не найден")
+    if not user or not user.otp_enabled or not user.otp_secret:
+        raise HTTPException(
+            status_code=401, detail="Пользователь не найден или 2FA не активна"
+        )
 
-    if not user.otp_enabled or not user.otp_secret:
-        raise HTTPException(status_code=400, detail="2FA не включена")
+    # 🔹 1. Приводим ввод к единому виду
+    clean_input = request.code.strip().replace(" ", "").replace("-", "").upper()
 
-    # Проверяем код
-    if not two_factor.verify_code(user.otp_secret, request.code):
-        # Проверяем резервные коды
-        if user.backup_codes:
-            valid, new_codes = two_factor.verify_backup_code(
-                user.backup_codes, request.code
+    # 🔹 2. Пробуем TOTP
+    try:
+        import pyotp
+
+        is_totp_valid = pyotp.TOTP(user.otp_secret).verify(clean_input, valid_window=1)
+    except Exception:
+        is_totp_valid = False
+
+    # 🔹 3. Проверяем резервные коды (если TOTP не подошёл)
+    is_backup_used = False
+    if not is_totp_valid and user.backup_codes:
+        try:
+            # Загружаем список из БД
+            saved_codes = (
+                json.loads(user.backup_codes)
+                if isinstance(user.backup_codes, str)
+                else user.backup_codes
             )
-            if valid:
-                user.backup_codes = json.dumps(new_codes)
-                await db.commit()
-            else:
-                raise HTTPException(status_code=401, detail="Неверный код")
-        else:
-            raise HTTPException(status_code=401, detail="Неверный код")
 
-    # Выдаём полноценный токен
+            # Приводим ВСЕ сохранённые коды к тому же виду, что и ввод
+            normalized_saved = [
+                c.strip().replace(" ", "").replace("-", "").upper() for c in saved_codes
+            ]
+
+            if clean_input in normalized_saved:
+                # Находим индекс совпавшего кода и удаляем ОРИГИНАЛ из списка
+                idx = normalized_saved.index(clean_input)
+                saved_codes.pop(idx)
+                user.backup_codes = json.dumps(saved_codes)
+                is_backup_used = True
+        except (json.JSONDecodeError, TypeError, ValueError, IndexError):
+            pass
+
+    # 🔹 4. Отказ, если ничего не подошло
+    if not is_totp_valid and not is_backup_used:
+        raise HTTPException(
+            status_code=401, detail="Неверный код 2FA или резервный код уже использован"
+        )
+
+    # 🔹 5. Сохраняем в БД только при использовании резервного кода
+    if is_backup_used:
+        await db.commit()
+
+    # 🔹 6. Выдаём токен
     access_token = create_access_token(
         data={"user_id": user.id, "email": user.email},
         expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),

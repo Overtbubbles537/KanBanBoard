@@ -201,10 +201,12 @@ body h1{
 }
 
 .settings-section {
-            margin: 20px 0;
-            padding: 15px;
-            background: #f9f9f9;
+            width: 24rem;
+            margin: 0 auto;
+            padding: 1rem;
+            background: #ffffff;
             border-radius: 8px;
+            margin-bottom: 1rem;
         }
         
         .qrcode-container {
@@ -256,6 +258,21 @@ body h1{
             color: white;
         }
 
+        #setup2faBtn {
+            margin-top: 0.8rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            border: 0.05rem;
+            border-color: #ddd;
+            border-style: solid;
+            background-color: aquamarine;
+            cursor: pointer;
+        }
+
+        #setup2faBtn:hover {
+            background-color: rgb(150, 246, 169);
+        }
+
 #verifyCode {
     width: 80%;
     box-sizing: border-box;
@@ -276,13 +293,17 @@ body h1{
 }
 
 .modal-buttons .Submit {
-    background: #4CAF50;
-    color: white;
+    background-color: aquamarine;
+    color: rgb(0, 0, 0);
 }
 
 .modal-buttons .Cancel {
-    background: #f44336;
-    color: white;
+    background-color: rgb(255, 153, 153);
+    color: rgb(0, 0, 0);
+}
+
+.modal-buttons .Cancel:hover {
+    background-color: red;
 }
 
 .task-card {
@@ -333,4 +354,3 @@ body h1{
     flex-wrap: wrap;
     align-items: center;
 }
-

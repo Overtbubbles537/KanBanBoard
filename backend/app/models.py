@@ -22,7 +22,7 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
 
-    # Поля для 2FA (будущее)
+    # Поля для 2FA
     otp_secret = Column(String, nullable=True)
     otp_enabled = Column(Boolean, default=False)
     backup_codes = Column(String, nullable=True)
@@ -30,7 +30,7 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
-    # Связь с задачами (одна запись, не нужно импортировать Task здесь)
+    # Связь с задачами
     tasks = relationship("Task", back_populates="owner", cascade="all, delete-orphan")
 
 

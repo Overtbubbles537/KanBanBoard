@@ -181,7 +181,6 @@ document.addEventListener('DOMContentLoaded', function() {
         addModal.style.display = 'block';
     });
 
-
     closeAddBtn.addEventListener('click', function() {
         addModal.style.display = 'none';
     });
@@ -194,8 +193,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const deadlineInput = document.getElementById('taskDeadline');
         const deadline = deadlineInput ? deadlineInput.value : null;
 
-        console.log('Отправляемый дедлайн:', deadline);
-        
         if (taskTitle === '') {
             alert('Задача не может быть пустой!');
             return;
@@ -206,11 +203,12 @@ document.addEventListener('DOMContentLoaded', function() {
             status: status
         };
 
+        // ✅ Отправляем дедлайн в правильном формате
         if (deadline) {
-            body.deadline = new Date(deadline).toISOString();  // ← Добавьте
+            body.deadline = new Date(deadline).toISOString();
+        } else {
+            body.deadline = null;
         }
-
-        console.log('ОТПРАВЛЯЕМЫЙ BODY:', JSON.stringify(body));
 
         fetch('http://localhost:8000/tasks/', {
             method: 'POST',
@@ -246,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const editForm = document.getElementById('editTaskForm');
     const editTitle = document.getElementById('editTaskTitle');
     const editStatus = document.getElementById('editTaskStatus');
-    const closeEditBtn = document.querySelector('#EditModal .close-edit');
+    const closeEditBtn = document.querySelector('#EditModal .close');
     const cancelEditBtn = document.querySelector('#EditModal .Cancel');
 
     closeEditBtn.addEventListener('click', function() {
@@ -263,7 +261,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const taskId = editForm.dataset.taskId;
         const newTitle = editTitle.value.trim();
         const newStatus = editStatus.value;
-
+        
+        // ✅ ПРАВИЛЬНЫЙ ID для формы редактирования
         const editDeadlineInput = document.getElementById('editTaskDeadline');
         const newDeadline = editDeadlineInput ? editDeadlineInput.value : null;
         
@@ -276,14 +275,13 @@ document.addEventListener('DOMContentLoaded', function() {
             title: newTitle,
             status: newStatus
         };
-
+        
+        // ✅ Добавляем дедлайн в тело запроса
         if (newDeadline) {
             body.deadline = new Date(newDeadline).toISOString();
         } else {
             body.deadline = null; // Позволяет очистить дедлайн
         }
-        
-        console.log('PUT запрос на /tasks/' + taskId, { title: newTitle, status: newStatus });
         
         fetch(`http://localhost:8000/tasks/${taskId}`, {
             method: 'PUT',
@@ -333,6 +331,14 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(tasks => {
+            // Сортировка: сначала задачи без дедлайна, потом по возрастанию даты
+            tasks.sort((a, b) => {
+                if (!a.deadline && !b.deadline) return 0;
+                if (!a.deadline) return 1;
+                if (!b.deadline) return -1;
+                return new Date(a.deadline) - new Date(b.deadline);
+            });
+            
             document.getElementById('todo-list').innerHTML = '';
             document.getElementById('progress-list').innerHTML = '';
             document.getElementById('done-list').innerHTML = '';
@@ -351,31 +357,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         taskText.textContent = task.title;
         taskText.className = 'task-text';
-
-        if (task.deadline) {
-            const deadlineSpan = document.createElement('span');
-            deadlineSpan.className = 'task-deadline';
-            
-            const deadlineDate = new Date(task.deadline);
-            const now = new Date();
-            
-            // Форматируем дату
-            const formattedDate = deadlineDate.toLocaleDateString('ru-RU', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            });
-            
-            deadlineSpan.textContent = `📅 ${formattedDate}`;
-            
-            // Красный если просрочено и не выполнено
-            if (deadlineDate < now && task.status !== 'done') {
-                deadlineSpan.style.color = 'red';
-                deadlineSpan.style.fontWeight = 'bold';
-            }
-            
-            li.appendChild(deadlineSpan);
-        }
         
         delBtn.className = 'DelBtn';
         delBtn.textContent = '❌';
@@ -393,9 +374,40 @@ document.addEventListener('DOMContentLoaded', function() {
         li.dataset.taskId = task.id;
         li.dataset.status = task.status;
         
+        // Порядок добавления: заголовок → дедлайн → кнопки
         li.appendChild(taskText);
+        
+        // Отображение дедлайна
+        if (task.deadline) {
+            const deadlineSpan = document.createElement('span');
+            deadlineSpan.className = 'task-deadline';
+            
+            const deadlineDate = new Date(task.deadline);
+            const now = new Date();
+            now.setHours(0, 0, 0, 0); // Сбрасываем время для корректного сравнения дат
+            
+            // Форматируем дату в русском формате
+            const formattedDate = deadlineDate.toLocaleDateString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            
+            deadlineSpan.textContent = `📅 ${formattedDate}`;
+            deadlineSpan.style.cssText = 'display: block; font-size: 14px; color: #000000; margin: 4px 0;';
+            
+            // Подсветка красным, если просрочено и задача не выполнена
+            if (deadlineDate < now && task.status !== 'done') {
+                deadlineSpan.style.color = '#dc3545';
+                deadlineSpan.style.fontWeight = 'bold';
+            }
+            
+            li.appendChild(deadlineSpan);
+        }
+        
         li.appendChild(buttonContainer);
 
+        // Распределение по колонкам
         if (task.status === 'todo') {
             document.getElementById('todo-list').appendChild(li);
         } else if (task.status === 'in-progress') {
@@ -436,6 +448,15 @@ document.addEventListener('DOMContentLoaded', function() {
             editTitle.value = task.title;
             editStatus.value = task.status;
             editForm.dataset.taskId = task.id;
+            
+            // Заполняем дедлайн, если он есть
+            const editDeadlineInput = document.getElementById('editTaskDeadline');
+            if (editDeadlineInput && task.deadline) {
+                // Преобразуем "2026-04-25T00:00:00Z" → "2026-04-25" для input type="date"
+                editDeadlineInput.value = task.deadline.split('T')[0];
+            } else if (editDeadlineInput) {
+                editDeadlineInput.value = '';
+            }
             
             // Показываем модальное окно
             editModal.style.display = 'block';

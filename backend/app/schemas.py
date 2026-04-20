@@ -122,14 +122,24 @@ class TwoFactorVerifyRequest(BaseModel):
 
 
 class TwoFactorLoginRequest(BaseModel):
-    """Запрос на вход с 2FA"""
+    """Запрос на вход с 2FA (второй этап)"""
 
     email: EmailStr
-    password: str
-    code: Optional[str] = Field(None, min_length=6, max_length=6)
+    code: str = Field(
+        ...,
+        min_length=4,
+        max_length=20,
+        description="TOTP (6 цифр) или резервный код (8-12 символов)",
+    )
+    # password убран: он уже проверен на первом шаге /login
 
 
 class BackupCodesResponse(BaseModel):
     """Ответ с резервными кодами"""
 
     codes: List[str]
+
+
+class Verify2FARequest(BaseModel):
+    email: str  # Или user_id, если твой первый этап логина возвращает ID
+    code: str  # Одно поле: сюда введут и TOTP, и резервный код
