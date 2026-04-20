@@ -181,6 +181,7 @@ document.addEventListener('DOMContentLoaded', function() {
         addModal.style.display = 'block';
     });
 
+
     closeAddBtn.addEventListener('click', function() {
         addModal.style.display = 'none';
     });
@@ -190,11 +191,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const taskTitle = document.getElementById('taskTitle').value.trim();
         const status = document.getElementById('taskStatus').value;
+        const deadlineInput = document.getElementById('taskDeadline');
+        const deadline = deadlineInput ? deadlineInput.value : null;
+
+        console.log('Отправляемый дедлайн:', deadline);
         
         if (taskTitle === '') {
             alert('Задача не может быть пустой!');
             return;
         }
+
+        const body = {
+            title: taskTitle,
+            status: status
+        };
+
+        if (deadline) {
+            body.deadline = new Date(deadline).toISOString();  // ← Добавьте
+        }
+
+        console.log('ОТПРАВЛЯЕМЫЙ BODY:', JSON.stringify(body));
 
         fetch('http://localhost:8000/tasks/', {
             method: 'POST',
@@ -202,10 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({
-                title: taskTitle,
-                status: status
-            })
+            body: JSON.stringify(body)
         })
         .then(response => {
             if (response.ok) return response.json();
@@ -219,6 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(() => {
             addModal.style.display = 'none';
             document.getElementById('taskTitle').value = '';
+            if (deadlineInput) deadlineInput.value = '';
             loadTasks();
         })
         .catch(error => {
@@ -249,10 +263,24 @@ document.addEventListener('DOMContentLoaded', function() {
         const taskId = editForm.dataset.taskId;
         const newTitle = editTitle.value.trim();
         const newStatus = editStatus.value;
+
+        const editDeadlineInput = document.getElementById('editTaskDeadline');
+        const newDeadline = editDeadlineInput ? editDeadlineInput.value : null;
         
         if (!newTitle) {
             alert('Название не может быть пустым!');
             return;
+        }
+
+        const body = {
+            title: newTitle,
+            status: newStatus
+        };
+
+        if (newDeadline) {
+            body.deadline = new Date(newDeadline).toISOString();
+        } else {
+            body.deadline = null; // Позволяет очистить дедлайн
         }
         
         console.log('PUT запрос на /tasks/' + taskId, { title: newTitle, status: newStatus });
@@ -263,10 +291,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({
-                title: newTitle,
-                status: newStatus
-            })
+            body: JSON.stringify(body)
         })
         .then(response => {
             if (response.ok) return response.json();
@@ -326,6 +351,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
         taskText.textContent = task.title;
         taskText.className = 'task-text';
+
+        if (task.deadline) {
+            const deadlineSpan = document.createElement('span');
+            deadlineSpan.className = 'task-deadline';
+            
+            const deadlineDate = new Date(task.deadline);
+            const now = new Date();
+            
+            // Форматируем дату
+            const formattedDate = deadlineDate.toLocaleDateString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            
+            deadlineSpan.textContent = `📅 ${formattedDate}`;
+            
+            // Красный если просрочено и не выполнено
+            if (deadlineDate < now && task.status !== 'done') {
+                deadlineSpan.style.color = 'red';
+                deadlineSpan.style.fontWeight = 'bold';
+            }
+            
+            li.appendChild(deadlineSpan);
+        }
         
         delBtn.className = 'DelBtn';
         delBtn.textContent = '❌';

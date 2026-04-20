@@ -84,6 +84,7 @@ async def create_task(
         status=task_data.status.value,
         order=max_order,
         user_id=user_id,
+        deadline=task_data.deadline,
     )
     db.add(db_task)
     await db.commit()

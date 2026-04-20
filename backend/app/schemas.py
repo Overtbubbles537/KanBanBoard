@@ -2,6 +2,7 @@ from pydantic import BaseModel, EmailStr, Field, ConfigDict
 from typing import Optional, List
 from datetime import datetime
 from enum import Enum
+from datetime import date
 
 
 # ====== Статусы задач ======
@@ -58,6 +59,7 @@ class TaskBase(BaseModel):
     description: Optional[str] = None
     status: TaskStatus = TaskStatus.TODO
     order: int = 0
+    deadline: Optional[date] = None
 
 
 class TaskCreate(TaskBase):
@@ -73,6 +75,7 @@ class TaskUpdate(BaseModel):
     description: Optional[str] = None
     status: Optional[TaskStatus] = None
     order: Optional[int] = None
+    deadline: Optional[date] = None
 
 
 class TaskResponse(TaskBase):
@@ -82,6 +85,7 @@ class TaskResponse(TaskBase):
     user_id: int
     created_at: datetime
     updated_at: Optional[datetime] = None
+    deadline: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
 
