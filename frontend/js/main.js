@@ -418,7 +418,8 @@ document.addEventListener('DOMContentLoaded', function() {
             column.classList.remove('drag-over');
             
             const taskId = e.dataTransfer.getData('text/plain');
-            const newStatus = column.id.replace('-list', '');
+            let newStatus = column.id.replace('-list', '');
+            if (newStatus === 'progress') newStatus = 'in-progress';
             const taskElement = document.querySelector(`[data-task-id="${taskId}"]`);
             
             if (!taskElement || taskElement.dataset.status === newStatus) return;
