@@ -2,7 +2,7 @@ import requests
 import concurrent.futures
 import time
 
-TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJlbWFpbCI6IjE2MDY5NTBAbGlzdC5ydSIsImV4cCI6MTc3NjcwNzExNywidHlwZSI6ImFjY2VzcyJ9.vf6McjOUTKhTw27WHKST21Ix5v0EJf2Nmgsh8e_8ns4"
+TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6IjE2MDY5NTBAbGlzdC5ydSIsInRlbXAiOnRydWUsImV4cCI6MTc3NjgwMTcwNCwidHlwZSI6ImFjY2VzcyJ9.ZxtCEsUuUAaimGFiwPUiqys4AHP9daPDG5GXyYRIdD8"
 BASE_URL = "http://127.0.0.1:8000/tasks"
 
 

@@ -21,9 +21,17 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 def get_password_hash(password: str) -> str:
-    # bcrypt ограничение 72 байта
-    if len(password.encode("utf-8")) > 72:
-        password = password[:72]
+    print(f"🔐 DEBUG: type={type(password).__name__}, value={repr(password)}")
+    print(f"🔐 DEBUG: len(str)={len(password) if isinstance(password, str) else 'N/A'}, len(bytes)={len(password.encode('utf-8')) if isinstance(password, str) else 'N/A'}")
+    
+    # Безопасная обработка
+    if not isinstance(password, str):
+        raise TypeError(f"Ожидается str, получено {type(password)}")
+    
+    password_bytes = password.encode('utf-8')
+    if len(password_bytes) > 72:
+        password = password_bytes[:72].decode('utf-8', errors='ignore')
+    
     return pwd_context.hash(password)
 
 
